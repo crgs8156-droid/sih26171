@@ -47,3 +47,14 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   }
   return true;
 });
+
+window.addEventListener("message", (event) => {
+  const msg = event.data as { type?: string } | null;
+  if (event.origin === location.origin && msg?.type === "sih/snapshot-request") {
+    console.info("[sih-26171] snapshot request received");
+    window.postMessage(
+      { type: "sih/snapshot-response", url: location.href, dom: buildSnapshot() },
+      "*",
+    );
+  }
+});

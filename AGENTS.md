@@ -57,12 +57,17 @@ docs/        PLAN.md (slice plan), later architecture + pitch material
 - 2026-08-31 — S0 chose `azureedge` fallback for Playwright browsers (CDN blocked).
 - 2026-08-31 — All Playwright browser downloads 307-redirect to `playwright.download.prss.microsoft.com`; that domain is default-deny blocked in the sandbox. User attempted allow; still blocked at first retry — must verify rule took effect (`curl -sI https://playwright.download.prss.microsoft.com/` should NOT return "Blocked by network policy").
 - 2026-08-31 — Git identity: repo-local placeholder `opencode-bot <opencode@local>` (user opted; can be amended later).
+- 2026-08-31 — Playwright pinned **1.49.1** (extensions in headless need 1.49+ new-headless; 1.48 silently ignores `--load-extension`).
+- 2026-08-31 — **Extensions fail to load when `launchPersistentContext("")` gets an empty userDataDir** (0 extension targets via CDP); an explicit workspace-local profile dir (`.playwright-profile/`, wiped per test) loads them reliably. Diagnosed via CDP `Target.getTargets` (authoritative: count `service_worker` targets).
+- 2026-08-31 — Isolated-world postMessage bridge rules learned: (1) do NOT guard with `event.source !== window` — WindowProxy identity across worlds is unreliable and silently rejects; filter on `event.origin` + message type instead; (2) a `{once:true}` responder consumes the page's OWN outgoing request (page receives its own postMessage) — use a named handler + explicit `removeEventListener`.
+- 2026-08-31 — Sandbox now allows `playwright.download.prss.microsoft.com` (user added); `PLAYWRIGHT_DOWNLOAD_HOST=https://playwright.azureedge.net` used for downloads; `playwright install-deps chromium` run (xvfb included).
+- 2026-08-31 — GitHub remote: `https://github.com/crgs8156-droid/sih26171.git` (private).
 
 ## Slice status
 
 | Slice | Scope | Status |
 |---|---|---|
-| S0 | Monorepo scaffold, extension builds + injects, mock server, Playwright loads extension, CI | **90% — extension/server/signal green; eval blocked on browser download (policy)** |
+| S0 | Monorepo scaffold, extension builds + injects, mock server, Playwright loads extension, CI | **done — eval 3/3 green, pushed** |
 | S1 | Agent loop closed: DOM snapshot → mock VLM → executed click/type/scroll on toy page | pending |
 | S2 | DOM PII redaction (regex + `[EMAIL_1]` placeholders); harness asserts zero raw PII egress | pending |
 | S3 | Screenshot path: captureVisibleTab → canvas blur/pixelate bboxes; face-det (WASM, WebGPU flag) | pending |
@@ -74,8 +79,5 @@ docs/        PLAN.md (slice plan), later architecture + pitch material
 
 ## User role / pending asks
 
-- **BLOCKED ITEM:** allow `playwright.download.prss.microsoft.com` in sandbox network policy (first attempt did not take effect — verify with `sbx policy ls` on host). Then: `cd eval && PLAYWRIGHT_DOWNLOAD_HOST=https://playwright.azureedge.net npx playwright install chromium && npm test`.
-- Create private GitHub repo `sih-26171-browser-agent`, paste URL → agent adds remote + pushes (user confirmed repo created but URL not yet received).
-- Git identity: placeholder `opencode-bot <opencode@local>` set repo-locally; user may swap later via `git config user.name/user.email` + `git commit --amend --reset-author`.
-- Load unpacked `extension/dist/` in Chrome for visual checks each slice (30 s).
+- Load unpacked `extension/dist/` in Chrome for visual checks each slice (30 s). **S0 visual check:** icon appears, console shows `[sih-26171] content script ready` on any page.
 - Before S4: `ollama pull qwen2.5vl:7b` on host + `sbx policy allow network host.docker.internal:11434`.

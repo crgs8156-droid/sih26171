@@ -38,7 +38,7 @@ Synthetic signal generator = test suite + training data + demo material
 
 ## Slices — 26171
 
-- [ ] **S0 — Harness before product:** scaffold all dirs; extension builds & injects; Playwright loads extension; mock server answers; CI. *(90% — extension/server/signal green; eval pending Chromium download, blocked on sandbox policy)*
+- [x] **S0 — Harness before product:** scaffold all dirs; extension builds & injects; Playwright loads extension; mock server answers; CI. *(done — eval 3/3 green)*
 - [ ] **S1 — Agent loop closed:** DOM snapshot → mock VLM → executed `click`/`type`/`scroll` on toy page.
 - [ ] **S2 — DOM PII redaction:** regex + placeholders; harness asserts zero raw PII leaves client; planted-PII corpus v1 + precision/recall numbers.
 - [ ] **S3 — Screenshot redaction:** captureVisibleTab → canvas blur/pixelate; face-det (WASM first, WebGPU behind flag).

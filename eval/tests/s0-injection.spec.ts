@@ -49,12 +49,16 @@ test("content script answers sih/snapshot with DOM data", async ({ context }) =>
   const snapshot = await page.evaluate(
     () =>
       new Promise((resolve) => {
-        chrome.runtime.sendMessage({ type: "sih/snapshot" }, (resp) =>
-          resolve(resp),
-        );
+        const handler = (event: MessageEvent) => {
+          if ((event.data as { type?: string })?.type !== "sih/snapshot-response") return;
+          window.removeEventListener("message", handler);
+          resolve(event.data);
+        };
+        window.addEventListener("message", handler);
+        window.postMessage({ type: "sih/snapshot-request" }, "*");
       }),
   );
-  expect(snapshot).toMatchObject({ ok: true, url: "https://mock.sih/toy.html" });
+  expect(snapshot).toMatchObject({ type: "sih/snapshot-response", url: "https://mock.sih/toy.html" });
   const dom = (snapshot as { dom: { id?: string }[] }).dom;
   expect(dom.some((n) => n.id === "email")).toBe(true);
 });
