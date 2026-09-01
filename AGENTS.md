@@ -62,6 +62,9 @@ docs/        PLAN.md (slice plan), later architecture + pitch material
 - 2026-08-31 — Isolated-world postMessage bridge rules learned: (1) do NOT guard with `event.source !== window` — WindowProxy identity across worlds is unreliable and silently rejects; filter on `event.origin` + message type instead; (2) a `{once:true}` responder consumes the page's OWN outgoing request (page receives its own postMessage) — use a named handler + explicit `removeEventListener`.
 - 2026-08-31 — Sandbox now allows `playwright.download.prss.microsoft.com` (user added); `PLAYWRIGHT_DOWNLOAD_HOST=https://playwright.azureedge.net` used for downloads; `playwright install-deps chromium` run (xvfb included).
 - 2026-08-31 — GitHub remote: `https://github.com/crgs8156-droid/sih26171.git` (private).
+- 2026-09-01 — Strategy pivot: BrowSer_AI (teammate's repo, public) reviewed and adopted as the 26171 build base via fork+PR; our repo continues as canonical for 26147 + S0 harness lessons.
+- 2026-09-01 — M6 implemented on `feature/agent-loop` in the fork workspace (`opencode-test/BrowSer_AI`, commit `9651062` + `cbb5c04`): agent loop, action bridge, firewall, backend `/v1/plan` (+`/v1/act` alias), 37 tests, CI. Gates: vitest 308/308, e2e 13/13, backend 10/10.
+- 2026-09-01 — GitHub secret fixed (fine-grained PAT, both repos, Contents RW). Pushes done: `sih26171` main rebased onto the GitHub-created initial commit (`bf9d499`, stub README/.gitignore — resolved keeping ours) → `e4b538b`; fork `feature/agent-loop` at `cbb5c04`. PR to open: `github.com/codesR-cs/BrowSer_AI/compare/main...crgs8156-droid:BrowSer_AI:feature/agent-loop`.
 
 ## Slice status
 
